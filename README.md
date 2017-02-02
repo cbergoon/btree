@@ -1,5 +1,7 @@
 # BTree implementation for Go
 
+Fork adds support for itype which allows type data to be included throughout logic. This specifically allows sharing of Item across trees while maintaining different ordering. 
+
 ![Travis CI Build Status](https://api.travis-ci.org/google/btree.svg?branch=master)
 
 This package provides an in-memory B-Tree implementation for Go, useful as
