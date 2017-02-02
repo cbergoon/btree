@@ -45,6 +45,7 @@
 // Its functions, therefore, exactly mirror those of
 // llrb.LLRB where possible.  Unlike gollrb, though, we currently don't
 // support storing multiple equivalent values.
+
 package btree
 
 import (
@@ -62,7 +63,7 @@ type Item interface {
 	// This must provide a strict weak ordering.
 	// If !a.Less(b) && !b.Less(a), we treat this to mean a == b (i.e. we can only
 	// hold one of either a or b in the tree).
-	Less(than Item) bool
+	Less(than Item, itype interface{}) bool
 }
 
 const (
@@ -118,20 +119,23 @@ type ItemIterator func(i Item) bool
 
 // New creates a new B-Tree with the given degree.
 //
-// New(2), for example, will create a 2-3-4 tree (each node contains 1-3 items
+// New(2, nil), for example, will create a 2-3-4 tree (each node contains 1-3 items
 // and 2-4 children).
-func New(degree int) *BTree {
-	return NewWithFreeList(degree, NewFreeList(DefaultFreeListSize))
+//
+// Parameter itype provides type information that indicates the item implementation.
+func New(degree int, itype interface{}) *BTree {
+	return NewWithFreeList(degree, NewFreeList(DefaultFreeListSize), itype)
 }
 
 // NewWithFreeList creates a new B-Tree that uses the given node free list.
-func NewWithFreeList(degree int, f *FreeList) *BTree {
+func NewWithFreeList(degree int, f *FreeList, itype interface{}) *BTree {
 	if degree <= 1 {
 		panic("bad degree")
 	}
 	return &BTree{
 		degree: degree,
 		cow:    &copyOnWriteContext{freelist: f},
+		itype:  itype,
 	}
 }
 
@@ -569,10 +573,13 @@ func (n *node) print(w io.Writer, level int) {
 //
 // Write operations are not safe for concurrent mutation by multiple
 // goroutines, but Read operations are.
+//
+// Itype indicates the item implementation intended to be used in item.Less() implementation.
 type BTree struct {
 	degree int
 	length int
 	root   *node
+	itype  interface{}
 	cow    *copyOnWriteContext
 }
 
