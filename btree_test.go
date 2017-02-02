@@ -76,7 +76,7 @@ func allrev(t *BTree) (out []Item) {
 var btreeDegree = flag.Int("degree", 32, "B-Tree degree")
 
 func TestBTree(t *testing.T) {
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	const treeSize = 10000
 	for i := 0; i < 10; i++ {
 		if min := tr.Min(); min != nil {
@@ -125,7 +125,7 @@ func TestBTree(t *testing.T) {
 }
 
 func ExampleBTree() {
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for i := Int(0); i < 10; i++ {
 		tr.ReplaceOrInsert(i)
 	}
@@ -157,7 +157,7 @@ func ExampleBTree() {
 }
 
 func TestDeleteMin(t *testing.T) {
-	tr := New(3)
+	tr := New(3, nil)
 	for _, v := range perm(100) {
 		tr.ReplaceOrInsert(v)
 	}
@@ -171,7 +171,7 @@ func TestDeleteMin(t *testing.T) {
 }
 
 func TestDeleteMax(t *testing.T) {
-	tr := New(3)
+	tr := New(3, nil)
 	for _, v := range perm(100) {
 		tr.ReplaceOrInsert(v)
 	}
@@ -189,7 +189,7 @@ func TestDeleteMax(t *testing.T) {
 }
 
 func TestAscendRange(t *testing.T) {
-	tr := New(2)
+	tr := New(2, nil)
 	for _, v := range perm(100) {
 		tr.ReplaceOrInsert(v)
 	}
@@ -215,7 +215,7 @@ func TestAscendRange(t *testing.T) {
 }
 
 func TestDescendRange(t *testing.T) {
-	tr := New(2)
+	tr := New(2, nil)
 	for _, v := range perm(100) {
 		tr.ReplaceOrInsert(v)
 	}
@@ -240,7 +240,7 @@ func TestDescendRange(t *testing.T) {
 	}
 }
 func TestAscendLessThan(t *testing.T) {
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for _, v := range perm(100) {
 		tr.ReplaceOrInsert(v)
 	}
@@ -266,7 +266,7 @@ func TestAscendLessThan(t *testing.T) {
 }
 
 func TestDescendLessOrEqual(t *testing.T) {
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for _, v := range perm(100) {
 		tr.ReplaceOrInsert(v)
 	}
@@ -291,7 +291,7 @@ func TestDescendLessOrEqual(t *testing.T) {
 	}
 }
 func TestAscendGreaterOrEqual(t *testing.T) {
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for _, v := range perm(100) {
 		tr.ReplaceOrInsert(v)
 	}
@@ -317,7 +317,7 @@ func TestAscendGreaterOrEqual(t *testing.T) {
 }
 
 func TestDescendGreaterThan(t *testing.T) {
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for _, v := range perm(100) {
 		tr.ReplaceOrInsert(v)
 	}
@@ -350,7 +350,7 @@ func BenchmarkInsert(b *testing.B) {
 	b.StartTimer()
 	i := 0
 	for i < b.N {
-		tr := New(*btreeDegree)
+		tr := New(*btreeDegree, nil)
 		for _, item := range insertP {
 			tr.ReplaceOrInsert(item)
 			i++
@@ -364,7 +364,7 @@ func BenchmarkInsert(b *testing.B) {
 func BenchmarkDeleteInsert(b *testing.B) {
 	b.StopTimer()
 	insertP := perm(benchmarkTreeSize)
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for _, item := range insertP {
 		tr.ReplaceOrInsert(item)
 	}
@@ -378,7 +378,7 @@ func BenchmarkDeleteInsert(b *testing.B) {
 func BenchmarkDeleteInsertCloneOnce(b *testing.B) {
 	b.StopTimer()
 	insertP := perm(benchmarkTreeSize)
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for _, item := range insertP {
 		tr.ReplaceOrInsert(item)
 	}
@@ -393,7 +393,7 @@ func BenchmarkDeleteInsertCloneOnce(b *testing.B) {
 func BenchmarkDeleteInsertCloneEachTime(b *testing.B) {
 	b.StopTimer()
 	insertP := perm(benchmarkTreeSize)
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for _, item := range insertP {
 		tr.ReplaceOrInsert(item)
 	}
@@ -413,7 +413,7 @@ func BenchmarkDelete(b *testing.B) {
 	i := 0
 	for i < b.N {
 		b.StopTimer()
-		tr := New(*btreeDegree)
+		tr := New(*btreeDegree, nil)
 		for _, v := range insertP {
 			tr.ReplaceOrInsert(v)
 		}
@@ -439,7 +439,7 @@ func BenchmarkGet(b *testing.B) {
 	i := 0
 	for i < b.N {
 		b.StopTimer()
-		tr := New(*btreeDegree)
+		tr := New(*btreeDegree, nil)
 		for _, v := range insertP {
 			tr.ReplaceOrInsert(v)
 		}
@@ -462,7 +462,7 @@ func BenchmarkGetCloneEachTime(b *testing.B) {
 	i := 0
 	for i < b.N {
 		b.StopTimer()
-		tr := New(*btreeDegree)
+		tr := New(*btreeDegree, nil)
 		for _, v := range insertP {
 			tr.ReplaceOrInsert(v)
 		}
@@ -494,7 +494,7 @@ func (a byInts) Swap(i, j int) {
 
 func BenchmarkAscend(b *testing.B) {
 	arr := perm(benchmarkTreeSize)
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for _, v := range arr {
 		tr.ReplaceOrInsert(v)
 	}
@@ -514,7 +514,7 @@ func BenchmarkAscend(b *testing.B) {
 
 func BenchmarkDescend(b *testing.B) {
 	arr := perm(benchmarkTreeSize)
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for _, v := range arr {
 		tr.ReplaceOrInsert(v)
 	}
@@ -533,7 +533,7 @@ func BenchmarkDescend(b *testing.B) {
 }
 func BenchmarkAscendRange(b *testing.B) {
 	arr := perm(benchmarkTreeSize)
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for _, v := range arr {
 		tr.ReplaceOrInsert(v)
 	}
@@ -556,7 +556,7 @@ func BenchmarkAscendRange(b *testing.B) {
 
 func BenchmarkDescendRange(b *testing.B) {
 	arr := perm(benchmarkTreeSize)
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for _, v := range arr {
 		tr.ReplaceOrInsert(v)
 	}
@@ -578,7 +578,7 @@ func BenchmarkDescendRange(b *testing.B) {
 }
 func BenchmarkAscendGreaterOrEqual(b *testing.B) {
 	arr := perm(benchmarkTreeSize)
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for _, v := range arr {
 		tr.ReplaceOrInsert(v)
 	}
@@ -605,7 +605,7 @@ func BenchmarkAscendGreaterOrEqual(b *testing.B) {
 }
 func BenchmarkDescendLessOrEqual(b *testing.B) {
 	arr := perm(benchmarkTreeSize)
-	tr := New(*btreeDegree)
+	tr := New(*btreeDegree, nil)
 	for _, v := range arr {
 		tr.ReplaceOrInsert(v)
 	}
@@ -647,7 +647,7 @@ func cloneTest(t *testing.T, b *BTree, start int, p []Item, wg *sync.WaitGroup, 
 }
 
 func TestCloneConcurrentOperations(t *testing.T) {
-	b := New(*btreeDegree)
+	b := New(*btreeDegree, nil)
 	trees := []*BTree{}
 	p := perm(cloneTestSize)
 	var wg sync.WaitGroup
